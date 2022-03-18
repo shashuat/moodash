@@ -14,15 +14,14 @@ class User(db.Model, UserMixin):  # user table
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False)
     email = db.Column(db.String(30), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False,
-                           default='default.jpg')
+    image_file = db.Column(db.String(20), nullable=False, default="default.jpg")
     password = db.Column(db.String(60), nullable=False)
     # Post refers to class post
-    posts = db.relationship('Post', backref='author', lazy=True)
+    posts = db.relationship("Post", backref="author", lazy=True)
 
     def get_reset_token(self, expire_sec=1800):
         s = Serializer(current_app.config["SECRET_KEY"], expire_sec)
-        token = s.dumps({"user_id": self.id}).decode('utf-8')
+        token = s.dumps({"user_id": self.id}).decode("utf-8")
 
         return token
 
@@ -30,7 +29,7 @@ class User(db.Model, UserMixin):  # user table
     def verify_reset_token(token):
         s = Serializer(current_app.config["SECRET_KEY"])
         try:
-            user_id = s.loads(token)['user_id']
+            user_id = s.loads(token)["user_id"]
         except:
             return None
         return User.query.get(user_id)
@@ -43,8 +42,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(200), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False,
-                            default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey(
-        'user.id'), nullable=False)  # user.id is tablename.column
-
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("user.id"), nullable=False
+    )  # user.id is tablename.column
